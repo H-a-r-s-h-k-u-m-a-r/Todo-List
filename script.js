@@ -1,60 +1,50 @@
 const mainTodo = document.querySelector(".TodoListElem");
 const inputVal = document.getElementById("inputVal");
+const addBtn = document.querySelector(".btn");
 
-// ✅ Get saved todos from LocalStorage or return empty array
-const getTodoListFromStorage = () => {
-  return JSON.parse(localStorage.getItem('MyTodoList')) || [];
-};
+let LocalTodoList = JSON.parse(localStorage.getItem("MyTodoList")) || [];
 
-// ✅ Save current list to LocalStorage
 const saveTodoToLocalStorage = () => {
-  localStorage.setItem('MyTodoList', JSON.stringify(LocalTodoList));
+  localStorage.setItem("MyTodoList", JSON.stringify(LocalTodoList));
 };
 
-let LocalTodoList = getTodoListFromStorage();
+const showTodoList = () => {
+  mainTodo.innerHTML = ""; // Clear previous items
 
-// ✅ Create and show a new task element
-const addTodoToDOM = (task) => {
-  const divElem = document.createElement("div");
-  divElem.classList.add("mainTodoDiv");
-  divElem.innerHTML = `<li>${task}</li> <button class="delbtn">Delete</button>`;
-  mainTodo.appendChild(divElem);
+  LocalTodoList.forEach((task) => {
+    const divElem = document.createElement("div");
+    divElem.classList.add("mainTodoDiv");
+
+    divElem.innerHTML = `
+      <li>${task}</li>
+      <button class="delbtn">Delete</button>
+    `;
+
+    mainTodo.appendChild(divElem);
+  });
 };
 
-// ✅ Handle adding a new task
-const addTodo = (e) => {
-  e.preventDefault();
+const addTodo = () => {
   const todoValue = inputVal.value.trim();
-  inputVal.value = "";
 
   if (todoValue !== "" && !LocalTodoList.includes(todoValue)) {
     LocalTodoList.push(todoValue);
     saveTodoToLocalStorage();
-    addTodoToDOM(todoValue);
+    showTodoList();
+    inputVal.value = "";
   }
 };
 
-// ✅ Load todos from localStorage on page load
-const showTodoList = () => {
-  LocalTodoList.forEach((task) => {
-    addTodoToDOM(task);
-  });
-};
-
-// ✅ Handle delete button clicks using event delegation
 mainTodo.addEventListener("click", (e) => {
   if (e.target.classList.contains("delbtn")) {
-    const taskText = e.target.previousElementSibling.innerText;
-    // Remove from array
-    LocalTodoList = LocalTodoList.filter(task => task !== taskText);
+    const taskText = e.target.previousElementSibling.innerText.trim();
+    LocalTodoList = LocalTodoList.filter((task) => task.trim() !== taskText);
     saveTodoToLocalStorage();
-    // Remove from DOM
-    e.target.parentElement.remove();
+    showTodoList();
   }
 });
 
-// ✅ Add task on button click
-document.querySelector(".btn").addEventListener("click", addTodo);
+addBtn.addEventListener("click", addTodo);
 
-// Show existing todos on first load
+// Load tasks on page load
 showTodoList();
