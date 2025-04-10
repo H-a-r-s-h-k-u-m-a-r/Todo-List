@@ -1,25 +1,27 @@
 const mainTodo = document.querySelector(".TodoListElem");
 const inputVal = document.getElementById("inputVal");
 
-let LocalTodoList = JSON.parse(localStorage.getItem("MyTodoList")) || [];
+// ✅ Get saved todos from LocalStorage or return empty array
+const getTodoListFromStorage = () => {
+  return JSON.parse(localStorage.getItem('MyTodoList')) || [];
+};
 
-// Save updated list to localStorage
+// ✅ Save current list to LocalStorage
 const saveTodoToLocalStorage = () => {
-  localStorage.setItem("MyTodoList", JSON.stringify(LocalTodoList));
+  localStorage.setItem('MyTodoList', JSON.stringify(LocalTodoList));
 };
 
-// Create and show all tasks (clears DOM first)
-const showTodoList = () => {
-  mainTodo.innerHTML = ""; // ✅ Clear existing tasks in UI
-  LocalTodoList.forEach((task) => {
-    const divElem = document.createElement("div");
-    divElem.classList.add("mainTodoDiv");
-    divElem.innerHTML = `<li>${task}</li> <button class="delbtn">Delete</button>`;
-    mainTodo.appendChild(divElem);
-  });
+let LocalTodoList = getTodoListFromStorage();
+
+// ✅ Create and show a new task element
+const addTodoToDOM = (task) => {
+  const divElem = document.createElement("div");
+  divElem.classList.add("mainTodoDiv");
+  divElem.innerHTML = `<li>${task}</li> <button class="delbtn">Delete</button>`;
+  mainTodo.appendChild(divElem);
 };
 
-// Add new todo
+// ✅ Handle adding a new task
 const addTodo = (e) => {
   e.preventDefault();
   const todoValue = inputVal.value.trim();
@@ -28,22 +30,31 @@ const addTodo = (e) => {
   if (todoValue !== "" && !LocalTodoList.includes(todoValue)) {
     LocalTodoList.push(todoValue);
     saveTodoToLocalStorage();
-    showTodoList(); // ✅ Refresh full list
+    addTodoToDOM(todoValue);
   }
 };
 
-// Delete todo using event delegation
+// ✅ Load todos from localStorage on page load
+const showTodoList = () => {
+  LocalTodoList.forEach((task) => {
+    addTodoToDOM(task);
+  });
+};
+
+// ✅ Handle delete button clicks using event delegation
 mainTodo.addEventListener("click", (e) => {
   if (e.target.classList.contains("delbtn")) {
-    const taskText = e.target.previousElementSibling.innerText.trim();
-    LocalTodoList = LocalTodoList.filter((task) => task !== taskText);
+    const taskText = e.target.previousElementSibling.innerText;
+    // Remove from array
+    LocalTodoList = LocalTodoList.filter(task => task !== taskText);
     saveTodoToLocalStorage();
-    showTodoList(); // ✅ Refresh full list after delete
+    // Remove from DOM
+    e.target.parentElement.remove();
   }
 });
 
-// Add button event
+// ✅ Add task on button click
 document.querySelector(".btn").addEventListener("click", addTodo);
 
-// Initial render on page load
+// Show existing todos on first load
 showTodoList();
