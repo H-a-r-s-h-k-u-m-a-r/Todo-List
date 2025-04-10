@@ -44,14 +44,13 @@ const showTodoList = () => {
 // ✅ Handle delete button clicks using event delegation
 mainTodo.addEventListener("click", (e) => {
   if (e.target.classList.contains("delbtn")) {
-    const taskText = e.target.previousElementSibling.innerText;
-    // Remove from array
-    LocalTodoList = LocalTodoList.filter(task => task !== taskText);
+    const taskText = e.target.previousElementSibling.innerText.trim();
+    LocalTodoList = LocalTodoList.filter(task => task.trim() !== taskText);
     saveTodoToLocalStorage();
-    // Remove from DOM
     e.target.parentElement.remove();
   }
 });
+
 
 // ✅ Add task on button click
 document.querySelector(".btn").addEventListener("click", addTodo);
