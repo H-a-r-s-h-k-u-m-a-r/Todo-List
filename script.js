@@ -50,6 +50,18 @@ mainTodo.addEventListener("click", (e) => {
     e.target.parentElement.remove();
   }
 });
+mainTodo.addEventListener("click", (e) => {
+  if (e.target.classList.contains("delbtn")) {
+    const parentDiv = e.target.parentElement;
+    const taskText = parentDiv.querySelector("li").innerText.trim();
+    LocalTodoList = LocalTodoList.filter(task => task.trim() !== taskText);
+    localStorage.setItem("MyTodoList", JSON.stringify(LocalTodoList));
+
+    // Remove from UI
+    parentDiv.remove();
+  }
+});
+
 
 
 // ✅ Add task on button click
