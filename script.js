@@ -42,14 +42,14 @@ const showTodoList = () => {
 };
 
 // ✅ Handle delete button clicks using event delegation
-mainTodo.addEventListener("click", (e) => {
-  if (e.target.classList.contains("delbtn")) {
-    const taskText = e.target.previousElementSibling.innerText.trim();
-    LocalTodoList = LocalTodoList.filter(task => task.trim() !== taskText);
-    saveTodoToLocalStorage();
-    e.target.parentElement.remove();
-  }
-});
+// mainTodo.addEventListener("click", (e) => {
+//   if (e.target.classList.contains("delbtn")) {
+//     const taskText = e.target.previousElementSibling.innerText.trim();
+//     LocalTodoList = LocalTodoList.filter(task => task.trim() !== taskText);
+//     saveTodoToLocalStorage();
+//     e.target.parentElement.remove();
+//   }
+// });
 mainTodo.addEventListener("click", (e) => {
   if (e.target.classList.contains("delbtn")) {
     const parentDiv = e.target.parentElement;
